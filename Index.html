@@ -1,0 +1,237 @@
+import React, { useState } from 'react';
+
+const MajorScalesQuiz = () => {
+  const questions = [
+    {
+      question: "Quali sono le alterazioni della scala di D maggiore?",
+      options: ["F#, C#", "F#, G#", "C#, G#", "F#"],
+      correct: "F#, C#"
+    },
+    {
+      question: "Quanti diesis ha la scala di E maggiore?",
+      options: ["3", "4", "5", "2"],
+      correct: "4"
+    },
+    {
+      question: "Quale scala maggiore ha 3 bemolli?",
+      options: ["F maggiore", "Bb maggiore", "Eb maggiore", "Ab maggiore"],
+      correct: "Eb maggiore"
+    },
+    {
+      question: "Quali note formano la scala di G maggiore?",
+      options: ["G, A, B, C, D, E, F#, G", "G, A, Bb, C, D, E, F, G", "G, A, B, C#, D, E, F#, G", "G, Ab, B, C, D, E, F, G"],
+      correct: "G, A, B, C, D, E, F#, G"
+    },
+    {
+      question: "Qual è la relativa minore di C maggiore?",
+      options: ["A minore", "E minore", "D minore", "G minore"],
+      correct: "A minore"
+    },
+    {
+      question: "Quanti bemolli ha la scala di F maggiore?",
+      options: ["0", "1", "2", "3"],
+      correct: "1"
+    },
+    {
+      question: "Quale scala maggiore non ha né diesis né bemolli?",
+      options: ["G maggiore", "D maggiore", "C maggiore", "A maggiore"],
+      correct: "C maggiore"
+    },
+    {
+      question: "Quali sono le alterazioni della scala di A maggiore?",
+      options: ["F#, C#, G#", "F#, C#", "C#, G#", "F#, G#"],
+      correct: "F#, C#, G#"
+    },
+    {
+      question: "Quale scala maggiore ha 5 diesis?",
+      options: ["A maggiore", "E maggiore", "B maggiore", "F# maggiore"],
+      correct: "B maggiore"
+    },
+    {
+      question: "Quale nota è il VII grado della scala di D maggiore?",
+      options: ["C", "C#", "B", "A"],
+      correct: "C#"
+    }
+  ];
+
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [score, setScore] = useState(0);
+  const [showResult, setShowResult] = useState(false);
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [isCorrect, setIsCorrect] = useState(null);
+  const [showCorrectAnswer, setShowCorrectAnswer] = useState(false);
+
+  const handleAnswer = (answer) => {
+    setSelectedAnswer(answer);
+    const correct = answer === questions[currentQuestion].correct;
+    setIsCorrect(correct);
+    
+    if (correct) {
+      setScore(score + 1);
+      // Avanzamento automatico dopo 1.5 secondi per risposte corrette
+      setTimeout(() => {
+        if (currentQuestion < questions.length - 1) {
+          setCurrentQuestion(currentQuestion + 1);
+          setSelectedAnswer(null);
+          setIsCorrect(null);
+          setShowCorrectAnswer(false);
+        } else {
+          setShowResult(true);
+        }
+      }, 1500);
+    } else {
+      // Mostra la risposta corretta per risposte errate
+      setShowCorrectAnswer(true);
+    }
+  };
+
+  const nextQuestion = () => {
+    if (currentQuestion < questions.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+      setSelectedAnswer(null);
+      setIsCorrect(null);
+      setShowCorrectAnswer(false);
+    } else {
+      setShowResult(true);
+    }
+  };
+
+  const resetQuiz = () => {
+    setCurrentQuestion(0);
+    setScore(0);
+    setShowResult(false);
+    setSelectedAnswer(null);
+    setIsCorrect(null);
+    setShowCorrectAnswer(false);
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 p-4 flex items-center justify-center">
+      <div className="absolute inset-0 bg-black opacity-50"></div>
+      <div className="absolute inset-0">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
+        <div className="absolute top-40 right-10 w-72 h-72 bg-yellow-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
+        <div className="absolute -bottom-8 left-20 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
+      </div>
+      
+      <div className="max-w-2xl w-full relative z-10">
+        <h1 className="text-5xl font-bold text-center mb-8 text-white drop-shadow-lg">
+          <span className="bg-gradient-to-r from-blue-400 to-purple-400 text-transparent bg-clip-text">
+            Quiz Scale Maggiori
+          </span>
+          <span className="text-3xl ml-3">🎹</span>
+        </h1>
+
+        <div className="backdrop-blur-md bg-white/10 rounded-2xl shadow-2xl p-8 border border-white/20">
+          {!showResult ? (
+            <div>
+              <div className="flex justify-between items-center mb-6 text-white/80">
+                <span className="flex items-center gap-2">
+                  <span className="text-purple-300">●</span>
+                  Domanda {currentQuestion + 1} di {questions.length}
+                </span>
+                <span className="flex items-center gap-2">
+                  <span className="text-yellow-300">★</span>
+                  Punteggio: {score}
+                </span>
+              </div>
+              
+              <div className="mb-8 bg-white/5 rounded-xl p-6 backdrop-blur-sm">
+                <h2 className="text-2xl font-semibold text-white">
+                  {questions[currentQuestion].question}
+                </h2>
+              </div>
+              
+              <div className="space-y-3 mb-6">
+                {questions[currentQuestion].options.map((option, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handleAnswer(option)}
+                    disabled={selectedAnswer !== null}
+                    className={`w-full p-4 text-left rounded-xl backdrop-blur-md transition-all duration-300 transform hover:scale-[1.02] ${
+                      selectedAnswer === option
+                        ? isCorrect
+                          ? 'bg-green-500/30 border-2 border-green-400 text-green-100 shadow-lg shadow-green-500/25'
+                          : 'bg-red-500/30 border-2 border-red-400 text-red-100 shadow-lg shadow-red-500/25'
+                        : showCorrectAnswer && option === questions[currentQuestion].correct
+                        ? 'bg-green-500/30 border-2 border-green-400 text-green-100 shadow-lg shadow-green-500/25 animate-pulse'
+                        : 'bg-white/10 border border-white/20 text-white hover:bg-white/20 hover:border-white/40'
+                    }`}
+                  >
+                    <span className="flex items-center font-medium">
+                      {selectedAnswer === option && (
+                        <span className="mr-3 text-xl">
+                          {isCorrect ? '✅' : '❌'}
+                        </span>
+                      )}
+                      {showCorrectAnswer && option === questions[currentQuestion].correct && selectedAnswer !== option && (
+                        <span className="mr-3 text-xl">✅</span>
+                      )}
+                      {option}
+                    </span>
+                  </button>
+                ))}
+              </div>
+              
+              {selectedAnswer && (
+                <div className={`text-center p-4 rounded-xl mb-4 backdrop-blur-md ${
+                  isCorrect 
+                    ? 'bg-green-500/20 text-green-100 border border-green-400/50' 
+                    : 'bg-red-500/20 text-red-100 border border-red-400/50'
+                }`}>
+                  <p className="font-semibold text-lg">
+                    {isCorrect ? '🎉 Corretto! Bravissimo!' : `😅 Sbagliato! La risposta corretta è: "${questions[currentQuestion].correct}"`}
+                  </p>
+                </div>
+              )}
+              
+              {selectedAnswer && !isCorrect && (
+                <button
+                  onClick={nextQuestion}
+                  className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3 px-6 rounded-xl font-semibold hover:from-purple-700 hover:to-blue-700 transition-all duration-300 shadow-lg transform hover:scale-[1.02]"
+                >
+                  Prossima Domanda →
+                </button>
+              )}
+              
+              {selectedAnswer && isCorrect && (
+                <div className="text-center text-purple-300 font-medium animate-pulse">
+                  Passaggio automatico alla prossima domanda...
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="text-center">
+              <div className="mb-8 bg-white/5 rounded-xl p-8 backdrop-blur-sm">
+                <h2 className="text-3xl font-bold mb-4 text-white">
+                  Quiz Completato! 🎊
+                </h2>
+                <p className="text-2xl mb-2 text-purple-200">
+                  Il tuo punteggio: <span className="text-yellow-300 font-bold">{score}</span> su {questions.length}
+                </p>
+                <p className="text-lg text-blue-200">
+                  Percentuale: {Math.round((score / questions.length) * 100)}%
+                </p>
+                <div className="mt-6 text-3xl">
+                  {score === questions.length ? '🏆 Perfetto!' : 
+                   score >= questions.length * 0.8 ? '🌟 Ottimo lavoro!' :
+                   score >= questions.length * 0.6 ? '👍 Buon lavoro!' :
+                   '💪 Continua a praticare!'}
+                </div>
+              </div>
+              
+              <button
+                onClick={resetQuiz}
+                className="bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3 px-8 rounded-xl font-semibold hover:from-purple-700 hover:to-blue-700 transition-all duration-300 shadow-lg transform hover:scale-[1.02]"
+              >
+                Ricomincia il Quiz 🔄
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default MajorScalesQuiz;
